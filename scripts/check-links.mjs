@@ -42,12 +42,13 @@ let checked = 0;
 for (const rel of files) {
   const source = fs
     .readFileSync(path.join(root, rel), "utf8")
-    .replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi, "");
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
 
-  for (const match of source.matchAll(/(?:src|href)=\"([^\"#]+)\"/g)) {
+  for (const match of source.matchAll(/(?:src|href)="([^"#]+)"/g)) {
     const ref = match[1];
 
-    if (/^(https?:|mailto:|tel:|data:|\\/\\/)/i.test(ref)) continue;
+    // External and non-file schemes are out of scope.
+    if (/^(https?:|mailto:|tel:|data:|\/\/)/i.test(ref)) continue;
 
     checked++;
 
