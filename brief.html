@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The brief — The Delegation Economy</title>
+<meta name="description" content="The six switches from the talk, and the brief on what to change before your buyer is a machine.">
+<link rel="canonical" href="https://delegationeconomy.fyi/brief">
+<style>
+:root { --ink:#111; --muted:#6B7280; --faint:#9CA3AF; --orange:#CE521C; --line:#E5E7EB; --wrap:1080px; }
+* { box-sizing:border-box; }
+body { margin:0; background:#fff; color:var(--ink); font-family:Inter,-apple-system,BlinkMacSystemFont,Arial,sans-serif; font-size:17px; line-height:1.6; }
+.wrap { max-width:var(--wrap); margin:0 auto; padding:0 20px; }
+a { color:var(--orange); text-decoration:none; }
+a:hover { text-decoration:underline; }
+.ask { padding:44px 20px 30px; border-bottom:1px solid var(--line); }
+.brandmark { display:inline-block; font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:#fff; background:var(--orange); padding:6px 14px; border-radius:999px; margin-bottom:24px; }
+.brandmark:hover { text-decoration:none; }
+h1 { margin:0 0 16px; font-size:clamp(28px,6vw,48px); line-height:1.08; letter-spacing:-.03em; }
+.lede { margin:0 0 28px; max-width:560px; color:var(--muted); }
+form.capture { max-width:520px; }
+.field-row { display:flex; gap:10px; flex-wrap:wrap; }
+input[type=email] { flex:1 1 100%; padding:16px; font:inherit; border:1.5px solid var(--ink); min-height:54px; }
+button.go { flex:1 1 100%; padding:16px 26px; min-height:54px; border:0; background:#111; color:#fff; font:inherit; font-weight:500; cursor:pointer; }
+@media (min-width:620px) { input[type=email] { flex:1 1 260px; } button.go { flex:0 0 auto; } }
+.form-note { margin-top:12px; font-size:14px; color:var(--faint); }
+.form-status { margin-top:14px; min-height:1.4em; }
+.form-status.ok { color:#15803D; font-weight:500; }
+.form-status.warn { color:var(--orange); }
+section { padding:52px 0; border-top:1px solid var(--line); }
+.eyebrow { font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--orange); font-weight:600; margin-bottom:14px; }
+h2 { margin:0 0 16px; font-size:clamp(22px,5vw,34px); }
+ol.switches { margin:0; padding-left:22px; max-width:720px; }
+ol.switches li { margin-bottom:12px; }
+iframe.demo-frame { width:100%; border:1px solid var(--line); height:620px; display:block; margin:12px 0 36px; }
+footer { border-top:1px solid var(--line); padding:34px 0 48px; color:var(--faint); font-size:14px; }
+</style>
+</head>
+<body>
+<div class="wrap ask">
+  <a href="./" class="brandmark">Delegation Economy</a>
+  <h1>You just heard the talk. Here is the one-page version.</h1>
+  <p class="lede">The brief on what to change before your buyer is a machine — pricing, policies, structured data, and the cancellation path you have been quietly relying on.</p>
+  <form class="capture" id="signupForm" novalidate>
+    <label for="email" style="display:block;font-weight:500;margin-bottom:8px">Where should I send it?</label>
+    <div class="field-row">
+      <input type="email" id="email" name="email" placeholder="you@company.com" required autocomplete="email" inputmode="email">
+      <button type="submit" class="go">Send me the brief</button>
+    </div>
+    <div class="form-note">One email. No cadence promises. Unsubscribe in one click.</div>
+    <div class="form-status" id="formStatus" role="status" aria-live="polite"></div>
+  </form>
+</div>
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Press them yourself</div>
+    <h2>The six switches from the talk.</h2>
+    <p class="lede">Each has two states — the world you sell into today, and the world after the customer delegates.</p>
+    <h3>1 · Twelve tabs, or one sentence</h3>
+    <iframe class="demo-frame" src="demos/twelve-tabs.html?embed=1" title="Twelve tabs, or one sentence" loading="lazy"></iframe>
+    <h3>2 · Your customer disappears</h3>
+    <iframe class="demo-frame" src="demos/customer-disappears.html?embed=1" title="The customer disappears" loading="lazy"></iframe>
+    <h3>3 · What lazy loyalty costs</h3>
+    <iframe class="demo-frame" src="demos/the-subscription-bill.html?embed=1" title="What lazy loyalty costs" loading="lazy"></iframe>
+    <h3>4 · Inconvenience is not a moat</h3>
+    <iframe class="demo-frame" src="demos/customer-exhaustion.html?embed=1" title="Inconvenience is not a moat" loading="lazy"></iframe>
+    <h3>5 · The clock said that yesterday</h3>
+    <iframe class="demo-frame" src="demos/the-clock-lied.html?embed=1" title="The clock said that yesterday" loading="lazy"></iframe>
+    <h3>6 · Your logo cannot charm an API</h3>
+    <iframe class="demo-frame" src="demos/logo-cannot-charm-api.html?embed=1" title="Your logo cannot charm an API" loading="lazy"></iframe>
+  </div>
+</section>
+<footer><div class="wrap">delegationeconomy.fyi · <a href="./">Back to the deck</a></div></footer>
+<script>
+(function () {
+  var FORM_ENDPOINT = 'https://formspree.io/f/mgawddar';
+  var FALLBACK = 'joey@delegationeconomy.fyi';
+  var form = document.getElementById('signupForm');
+  var input = document.getElementById('email');
+  var status = document.getElementById('formStatus');
+  var button = form.querySelector('button.go');
+  function say(msg, kind) { status.innerHTML = msg; status.className = 'form-status ' + (kind || ''); }
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var value = input.value.trim();
+    if (!value || value.indexOf('@') < 1 || value.lastIndexOf('.') < value.indexOf('@')) {
+      say('That address doesn’t look right — check it and try again.', 'warn');
+      input.focus(); return;
+    }
+    button.disabled = true; say('Sending…');
+    fetch(FORM_ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ email: value }) })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); form.reset(); say('Got it. The brief is on its way.', 'ok'); })
+      .catch(function () { say('That didn’t go through. Email <a href="mailto:' + FALLBACK + '">' + FALLBACK + '</a>.', 'warn'); })
+      .then(function () { button.disabled = false; });
+  });
+})();
+</script>
+</body>
+</html>
