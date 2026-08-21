@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The customer disappears — Delegation Economy</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .grid-scene {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr 1.5fr;
+    align-items: center;
+    gap: 28px;
+  }
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .tile {
+    aspect-ratio: 4 / 2.6;
+    background: var(--blue-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5B7FB8;
+    transition: opacity 340ms ease, background 340ms ease, color 340ms ease;
+  }
+  .tile.is-dim { opacity: 0.28; }
+  .tile.is-chosen {
+    grid-column: 3 / span 2;
+    background: var(--blue);
+    color: #fff;
+    opacity: 1;
+    flex-direction: column;
+    gap: 8px;
+    aspect-ratio: auto;
+    padding: 26px 0;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  .chosen-row { margin-top: 16px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 820px) {
+    .grid-scene { grid-template-columns: 1fr; gap: 34px; }
+    .dots { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+<main class="stage">
+
+  <div class="bar">
+    <span class="pill is-blue" id="pill">Today</span>
+    <span class="bar-note" id="barNote">A person operates the internet</span>
+  </div>
+
+  <h1 id="headline">The customer clicks.</h1>
+
+  <div class="scene">
+    <div class="grid-scene">
+
+      <div class="actor" id="customer">
+        <div class="icon" aria-hidden="true">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <div class="name">Customer</div>
+        <div class="sub" id="customerSub">searches · clicks · compares</div>
+      </div>
+
+      <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+
+      <div class="actor is-dim" id="agent">
+        <div class="icon" aria-hidden="true">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="8" width="16" height="12" rx="2"/><path d="M12 8V4"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/>
+          </svg>
+        </div>
+        <div class="name">AI Agent</div>
+        <div class="sub">reads everything</div>
+      </div>
+
+      <div>
+        <div class="tiles" id="tiles"></div>
+        <div class="chosen-row" id="chosenRow"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="verdict" id="verdict">
+    <div class="line1" id="v1">47 websites get a chance.</div>
+    <div class="line2" id="v2">The customer sees the competition.</div>
+  </div>
+
+  <button class="reveal" id="btn">Reveal the Delegation Economy</button>
+
+  <p class="cue">Click the reveal immediately after saying: <b>“The human being is leaving the battlefield.”</b></p>
+
+</main>
+
+<script src="_stage.js"></script>
+<script>
+(function () {
+  if (new URLSearchParams(location.search).has('embed')) document.body.classList.add('embed');
+
+  var TILE_COUNT = 12;
+  var tiles = document.getElementById('tiles');
+  var chosenRow = document.getElementById('chosenRow');
+
+  var buildingSVG =
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
+    '<path d="M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16"/><path d="M15 9h4a1 1 0 0 1 1 1v11"/>' +
+    '<path d="M8 8h2M8 12h2M8 16h2M18 13h.01M18 17h.01"/><path d="M2 21h20"/></svg>';
+
+  for (var i = 0; i < TILE_COUNT; i++) {
+    var t = document.createElement('div');
+    t.className = 'tile';
+    t.innerHTML = buildingSVG;
+    tiles.appendChild(t);
+  }
+
+  var chosen = document.createElement('div');
+  chosen.className = 'tile is-chosen';
+  chosen.innerHTML = buildingSVG + '<span>Chosen</span>';
+  chosen.style.display = 'none';
+  chosenRow.appendChild(chosen);
+
+  var state = 'today';
+
+  var COPY = {
+    today: {
+      pill: 'Today', pillClass: 'pill is-blue',
+      note: 'A person operates the internet',
+      headline: 'The customer clicks.',
+      customerSub: 'searches · clicks · compares',
+      v1: '47 websites get a chance.',
+      v2: 'The customer sees the competition.',
+      btn: 'Reveal the Delegation Economy'
+    },
+    delegated: {
+      pill: 'The Delegation Economy', pillClass: 'pill is-orange',
+      note: 'The person delegates one outcome',
+      headline: 'Your customer disappears.',
+      customerSub: 'speaks once',
+      v1: '47 companies compete. 46 never meet the customer.',
+      v2: 'The sale happens. The customer journey vanishes.',
+      btn: 'Show today again'
+    }
+  };
+
+  var el = {
+    pill: document.getElementById('pill'),
+    note: document.getElementById('barNote'),
+    headline: document.getElementById('headline'),
+    customer: document.getElementById('customer'),
+    customerSub: document.getElementById('customerSub'),
+    agent: document.getElementById('agent'),
+    v1: document.getElementById('v1'),
+    v2: document.getElementById('v2'),
+    btn: document.getElementById('btn')
+  };
+
+  function render() {
+    var c = COPY[state];
+    var delegated = state === 'delegated';
+
+    el.pill.textContent = c.pill;
+    el.pill.className = c.pillClass;
+    el.note.textContent = c.note;
+    el.headline.textContent = c.headline;
+    el.customerSub.textContent = c.customerSub;
+    el.v1.textContent = c.v1;
+    el.v2.textContent = c.v2;
+    el.btn.textContent = c.btn;
+
+    el.customer.classList.toggle('is-dim', delegated);
+    el.agent.classList.toggle('is-dim', !delegated);
+    el.agent.classList.toggle('is-live', delegated);
+
+    Array.prototype.forEach.call(tiles.children, function (t) {
+      t.classList.toggle('is-dim', delegated);
+    });
+    chosen.style.display = delegated ? 'flex' : 'none';
+  }
+
+  el.btn.addEventListener('click', function () {
+    state = state === 'today' ? 'delegated' : 'today';
+    render();
+  });
+
+  // Space / arrow keys advance the reveal from the back of a room.
+  document.addEventListener('keydown', function (e) {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      el.btn.click();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

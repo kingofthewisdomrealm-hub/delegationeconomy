@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What lazy loyalty costs — Delegation Economy</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .ledger { max-width: 620px; margin: 0 auto; }
+
+  /* Nine rows plus the total has to clear a 16:9 projector without scrolling,
+     so the vertical rhythm here is deliberately tighter than the other aids. */
+  .li {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 18px; padding: 7px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: clamp(14px, 1.6vw, 17px);
+    opacity: 0.28;
+    transform: translateY(4px);
+    transition: opacity 260ms ease, transform 260ms ease;
+  }
+  .li.is-in { opacity: 1; transform: none; }
+  .li .what { color: var(--ink); }
+  .li .note { color: var(--faint); font-size: 0.82em; margin-left: 8px; }
+  .li .amt {
+    color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .li.is-in .amt { color: var(--orange); font-weight: 600; }
+
+  .total {
+    margin-top: 20px; text-align: center;
+    opacity: 0; transition: opacity 300ms ease;
+  }
+  .total.is-in { opacity: 1; }
+  .total .label {
+    font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .total .big-number { color: var(--orange); font-size: clamp(40px, 7vw, 78px); }
+  .total .per { margin-top: 6px; font-size: 16px; color: var(--muted); }
+
+  /* This aid supplies its own height; the shared floor would only add slack. */
+  .scene { min-height: 0; }
+  .verdict { margin-top: 26px; }
+</style>
+</head>
+<body>
+<main class="stage">
+
+  <div class="bar">
+    <span class="pill is-blue" id="pill">Today</span>
+    <span class="bar-note" id="barNote">Cancelling is annoying, so you don’t</span>
+  </div>
+
+  <h1 id="headline">You are still paying for these.</h1>
+
+  <div class="scene">
+    <div class="ledger" id="ledger"></div>
+    <div class="total" id="total">
+      <div class="label" id="totalLabel">A year of not getting around to it</div>
+      <div class="big-number" id="totalNum">$0</div>
+      <div class="per" id="totalPer">&nbsp;</div>
+    </div>
+  </div>
+
+  <div class="verdict" id="verdict">
+    <div class="line1" id="v1">You meant to cancel four of them.</div>
+    <div class="line2" id="v2">You have meant to cancel four of them for two years.</div>
+  </div>
+
+  <button class="reveal" id="btn">Let the agent look</button>
+
+  <p class="footnote">Illustrative figures, not a survey. Use your own numbers if you have them.</p>
+  <p class="cue">Reveal it after: <b>“How many subscriptions do you still pay for because canceling them is annoying?”</b></p>
+
+</main>
+
+<script src="_stage.js"></script>
+<script>
+(function () {
+  var ITEMS = [
+    { what: 'Streaming service',        note: 'watched twice this year', m: 15.99 },
+    { what: 'Second streaming service', note: 'for one show, which ended', m: 12.99 },
+    { what: 'Music',                    note: 'family plan, no family on it', m: 16.99 },
+    { what: 'Cloud storage',            note: 'auto-upgraded in March', m: 9.99 },
+    { what: 'Fitness app',              note: 'last opened in January', m: 14.99 },
+    { what: 'News site',                note: 'intro rate expired quietly', m: 24.00 },
+    { what: 'Software',                 note: 'used once, for one file', m: 29.00 },
+    { what: 'Meal kit',                 note: '“paused” — still billing', m: 11.99 },
+    { what: 'Premium account',          note: 'you forgot the password', m: 7.99 }
+  ];
+
+  var MONTHLY = ITEMS.reduce(function (s, i) { return s + i.m; }, 0);
+  var YEARLY = MONTHLY * 12;
+
+  var ledger = document.getElementById('ledger');
+  ITEMS.forEach(function (it) {
+    var row = document.createElement('div');
+    row.className = 'li';
+    row.innerHTML =
+      '<span class="what">' + it.what + '<span class="note">' + it.note + '</span></span>' +
+      '<span class="amt">$' + it.m.toFixed(2) + ' / mo</span>';
+    ledger.appendChild(row);
+  });
+
+  var el = {
+    pill: document.getElementById('pill'),
+    note: document.getElementById('barNote'),
+    headline: document.getElementById('headline'),
+    total: document.getElementById('total'),
+    totalLabel: document.getElementById('totalLabel'),
+    totalNum: document.getElementById('totalNum'),
+    totalPer: document.getElementById('totalPer'),
+    verdict: document.getElementById('verdict'),
+    v1: document.getElementById('v1'),
+    v2: document.getElementById('v2'),
+    btn: document.getElementById('btn')
+  };
+
+  var rows = ledger.querySelectorAll('.li');
+  var state = 'today';
+  var timers = [];
+
+  function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+
+  function countTo(target, ms) {
+    var start = performance.now();
+    function frame(now) {
+      var p = Math.min(1, (now - start) / ms);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.totalNum.textContent = '$' + Math.round(target * eased).toLocaleString('en-US');
+      if (p < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function render() {
+    clearTimers();
+    var found = state === 'found';
+
+    el.pill.textContent = found ? 'Delegation Economy' : 'Today';
+    el.pill.className = found ? 'pill is-orange' : 'pill is-blue';
+    el.note.textContent = found ? 'The agent is not annoyed' : 'Cancelling is annoying, so you don’t';
+    el.headline.textContent = found
+      ? 'Your agent found them in four seconds.'
+      : 'You are still paying for these.';
+
+    el.verdict.classList.toggle('is-orange', found);
+    el.btn.textContent = found ? 'Start over' : 'Let the agent look';
+
+    if (!found) {
+      rows.forEach(function (r) { r.classList.remove('is-in'); });
+      el.total.classList.remove('is-in');
+      el.totalNum.textContent = '$0';
+      el.totalPer.innerHTML = '&nbsp;';
+      el.v1.textContent = 'You meant to cancel four of them.';
+      el.v2.textContent = 'You have meant to cancel four of them for two years.';
+      return;
+    }
+
+    // Stagger the lines in, then slam the total. The climb is the whole effect.
+    rows.forEach(function (r, i) {
+      timers.push(setTimeout(function () { r.classList.add('is-in'); }, 70 * i));
+    });
+
+    timers.push(setTimeout(function () {
+      el.total.classList.add('is-in');
+      countTo(YEARLY, 1300);
+      el.totalPer.textContent =
+        '$' + MONTHLY.toFixed(2) + ' a month · ' + ITEMS.length + ' services · 0 cancelled by you';
+      el.v1.textContent = 'It cancelled six before you finished breakfast.';
+      el.v2.textContent = 'None of them lost you because they were worse. They lost you because you finally had help.';
+    }, 70 * rows.length + 240));
+  }
+
+  el.btn.addEventListener('click', function () {
+    state = state === 'today' ? 'found' : 'today';
+    render();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      el.btn.click();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inconvenience is not a moat — Delegation Economy</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .maze-scene {
+    display: grid;
+    grid-template-columns: 1fr 2.4fr 1fr;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .maze {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 14px;
+    transition: opacity 340ms ease;
+  }
+  /* Dim the steps, never the parent — opacity on the parent would fade CANCEL too. */
+  .maze.is-dim .step { opacity: 0.18; }
+
+  .step {
+    background: var(--orange-soft);
+    color: var(--ink);
+    padding: 22px 12px;
+    text-align: center;
+    font-size: clamp(13px, 1.5vw, 17px);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: opacity 340ms ease;
+  }
+
+  /* the CANCEL cell: the payoff of the whole slide */
+  .cancel {
+    background: var(--orange);
+    color: #fff;
+    padding: 22px 12px;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: clamp(14px, 1.6vw, 18px);
+    transition: all 340ms ease;
+  }
+  .cancel.is-big {
+    grid-column: 1 / -1;
+    padding: 30px 12px;
+    font-size: clamp(17px, 2vw, 22px);
+  }
+
+  @media (max-width: 820px) {
+    .maze-scene { grid-template-columns: 1fr; gap: 30px; }
+  }
+</style>
+</head>
+<body>
+<main class="stage">
+
+  <div class="bar">
+    <span class="pill is-blue" id="pill">Today</span>
+    <span class="bar-note" id="barNote">The customer gives up</span>
+  </div>
+
+  <h1 id="headline">Inconvenience is not a moat.</h1>
+
+  <div class="scene">
+    <div class="maze-scene">
+
+      <div class="actor" id="customer">
+        <div class="icon" aria-hidden="true">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <div class="name">Customer</div>
+        <div class="sub" id="customerSub">“I’ll cancel it later.”</div>
+      </div>
+
+      <div>
+        <div class="maze" id="maze">
+          <div class="step">Find settings</div>
+          <div class="step">Reset password</div>
+          <div class="step">Call support</div>
+          <div class="step">Wait on hold</div>
+          <div class="step">Decline offer</div>
+          <div class="step">Are you sure?</div>
+          <div class="step">Really sure?</div>
+          <div class="cancel" id="cancel">Cancel</div>
+        </div>
+      </div>
+
+      <div class="actor is-dim" id="agent">
+        <div class="icon" aria-hidden="true">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="8" width="16" height="12" rx="2"/><path d="M12 8V4"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/>
+          </svg>
+        </div>
+        <div class="name">AI Agent</div>
+        <div class="sub">never gets tired</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="verdict" id="verdict">
+    <div class="line1" id="v1">The business keeps getting paid.</div>
+    <div class="line2" id="v2">Not because it is loved. Because leaving is annoying.</div>
+  </div>
+
+  <button class="reveal" id="btn">Give the customer an agent</button>
+
+  <p class="cue">Reveal it after: <b>“Entire industries are protected by customer exhaustion. AI is about to cure it.”</b></p>
+
+</main>
+
+<script src="_stage.js"></script>
+<script>
+(function () {
+  if (new URLSearchParams(location.search).has('embed')) document.body.classList.add('embed');
+
+  var el = {
+    pill: document.getElementById('pill'),
+    note: document.getElementById('barNote'),
+    headline: document.getElementById('headline'),
+    customer: document.getElementById('customer'),
+    customerSub: document.getElementById('customerSub'),
+    agent: document.getElementById('agent'),
+    maze: document.getElementById('maze'),
+    cancel: document.getElementById('cancel'),
+    verdict: document.getElementById('verdict'),
+    v1: document.getElementById('v1'),
+    v2: document.getElementById('v2'),
+    btn: document.getElementById('btn')
+  };
+
+  var state = 'today';
+
+  function render() {
+    var cured = state === 'cured';
+
+    el.pill.textContent = cured ? 'Delegation Economy' : 'Today';
+    el.pill.className = cured ? 'pill is-orange' : 'pill is-blue';
+    el.note.textContent = cured ? 'The agent never gets exhausted' : 'The customer gives up';
+    el.headline.textContent = cured
+      ? 'AI is about to cure customer laziness.'
+      : 'Inconvenience is not a moat.';
+
+    el.customerSub.textContent = cured ? '“Handle it.”' : '“I’ll cancel it later.”';
+    el.customer.classList.toggle('is-dim', cured);
+    el.agent.classList.toggle('is-dim', !cured);
+    el.agent.classList.toggle('is-live', cured);
+
+    el.maze.classList.toggle('is-dim', cured);
+    el.cancel.classList.toggle('is-big', cured);
+    // The cancel button stays at full strength while the maze fades behind it.
+    el.cancel.style.opacity = '1';
+
+    el.v1.textContent = cured ? 'Cancelled. Switched. Forgotten.' : 'The business keeps getting paid.';
+    el.v2.textContent = cured
+      ? 'If inconvenience protects your business, you do not have a moat. You have a countdown.'
+      : 'Not because it is loved. Because leaving is annoying.';
+    el.verdict.classList.toggle('is-orange', cured);
+
+    el.btn.textContent = cured ? 'Show today again' : 'Give the customer an agent';
+  }
+
+  el.btn.addEventListener('click', function () {
+    state = state === 'today' ? 'cured' : 'today';
+    render();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      el.btn.click();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

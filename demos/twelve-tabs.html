@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Twelve tabs — Delegation Economy</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  /* 300px, not 400 — the tabs only occupy three rows and the extra was dead
+     space between the pile and the caption. */
+  .board { position: relative; min-height: 300px; }
+
+  .tabs { position: relative; height: 300px; transition: opacity 300ms ease; }
+  .tabs.is-gone { opacity: 0; pointer-events: none; }
+
+  .tab {
+    position: absolute;
+    width: 250px;
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    font-size: 13px;
+  }
+  .tab .chrome {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 9px; background: #F3F4F6; border-bottom: 1px solid var(--line);
+  }
+  .tab .chrome i {
+    width: 8px; height: 8px; border-radius: 50%; background: #D1D5DB; display: block;
+  }
+  .tab .t {
+    padding: 9px 11px;
+    color: var(--ink);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .tab.note { background: #FEF9C3; border-color: #FDE68A; }
+  .tab.note .chrome { background: #FEF08A; border-color: #FDE68A; }
+
+  /* ---- the one sentence ---- */
+  .prompt {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 26px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 340ms ease;
+  }
+  .prompt.is-in { opacity: 1; }
+
+  .say {
+    max-width: 700px; width: 100%;
+    border: 1px solid var(--line); padding: 26px 28px;
+    font-size: clamp(17px, 2.2vw, 24px); line-height: 1.45;
+  }
+  .say .caret { color: var(--orange); font-weight: 700; margin-right: 10px; }
+
+  .booked {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--orange); color: #fff;
+    padding: 18px 34px;
+    font-size: clamp(17px, 2vw, 22px); font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .elapsed { font-size: 16px; color: var(--muted); }
+</style>
+</head>
+<body>
+<main class="stage">
+
+  <div class="bar">
+    <span class="pill is-blue" id="pill">Today</span>
+    <span class="bar-note" id="barNote">Ninety minutes, twelve tabs</span>
+  </div>
+
+  <h1 id="headline">Planning a holiday, today.</h1>
+
+  <div class="scene">
+    <div class="board">
+      <div class="tabs" id="tabs"></div>
+
+      <div class="prompt" id="prompt">
+        <div class="say">
+          <span class="caret">›</span>Seven days, under $3,000. No overnight flights. Good food.
+          Quiet hotel. Skip anyone with terrible service. Use my points. Book it.
+        </div>
+        <div class="booked">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>
+          Booked
+        </div>
+        <div class="elapsed">One sentence · forty seconds · one company gets paid</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict" id="verdict">
+    <div class="line1" id="v1">Twelve tabs. Ninety minutes. You stay home.</div>
+    <div class="line2" id="v2">Every one of those companies got a look. That was their whole business model.</div>
+  </div>
+
+  <button class="reveal" id="btn">Delegate it instead</button>
+
+  <p class="cue">Reveal it on: <b>“In the Delegation Economy, you say…”</b></p>
+
+</main>
+
+<script src="_stage.js"></script>
+<script>
+(function () {
+  // title, x%, y(px), rotation
+  var TABS = [
+    ['Flights — 6 stops, 19 hrs',            2,   4,  -3],
+    ['Hotels near the beach (page 7 of 40)', 26,  0,   2],
+    ['Is this hotel a scam? — forum',        53,  10, -2],
+    ['promo code 2032 reddit',               76,  2,   4],
+    ['Cheapest week to fly?',                6,   96,  3],
+    ['Reviews: “rooms smell fine now”',      30,  104, -3],
+    ['Baggage fees explained',               56,  92,  2],
+    ['Travel insurance — 41 options',        78,  100, -4],
+    ['Same hotel, different site, $60 less', 10,  190, -2],
+    ['Weather in October',                   36,  198, 3],
+    ['Do I need a visa?',                    60,  188, -3],
+    ['Notes: ask spouse (again)',            80,  196, 2, true]
+  ];
+
+  var wrap = document.getElementById('tabs');
+  TABS.forEach(function (t) {
+    var d = document.createElement('div');
+    d.className = 'tab' + (t[4] ? ' note' : '');
+    d.style.left = t[1] + '%';
+    d.style.top = t[2] + 'px';
+    d.style.transform = 'rotate(' + t[3] + 'deg)';
+    d.innerHTML = '<div class="chrome"><i></i><i></i><i></i></div><div class="t">' + t[0] + '</div>';
+    wrap.appendChild(d);
+  });
+
+  var el = {
+    pill: document.getElementById('pill'),
+    note: document.getElementById('barNote'),
+    headline: document.getElementById('headline'),
+    tabs: wrap,
+    prompt: document.getElementById('prompt'),
+    verdict: document.getElementById('verdict'),
+    v1: document.getElementById('v1'),
+    v2: document.getElementById('v2'),
+    btn: document.getElementById('btn')
+  };
+
+  var state = 'today';
+
+  function render() {
+    var delegated = state === 'delegated';
+
+    el.pill.textContent = delegated ? 'Delegation Economy' : 'Today';
+    el.pill.className = delegated ? 'pill is-orange' : 'pill is-blue';
+    el.note.textContent = delegated ? 'One instruction, then silence' : 'Ninety minutes, twelve tabs';
+    el.headline.textContent = delegated ? 'Planning a holiday, soon.' : 'Planning a holiday, today.';
+
+    el.tabs.classList.toggle('is-gone', delegated);
+    el.prompt.classList.toggle('is-in', delegated);
+
+    el.v1.textContent = delegated
+      ? 'Eleven companies were compared. None of them were seen.'
+      : 'Twelve tabs. Ninety minutes. You stay home.';
+    el.v2.textContent = delegated
+      ? 'No abandoned cart. No failed advertisement. No angry customer. They simply stopped being chosen.'
+      : 'Every one of those companies got a look. That was their whole business model.';
+    el.verdict.classList.toggle('is-orange', delegated);
+
+    el.btn.textContent = delegated ? 'Show the tabs again' : 'Delegate it instead';
+  }
+
+  el.btn.addEventListener('click', function () {
+    state = state === 'today' ? 'delegated' : 'today';
+    render();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      el.btn.click();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

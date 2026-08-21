@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The clock said that yesterday — Delegation Economy</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .split2 { display: grid; grid-template-columns: 1fr 1fr; gap: 46px; align-items: start; }
+  @media (max-width: 880px) { .split2 { grid-template-columns: 1fr; } }
+
+  /* ---- the fake urgency widget ---- */
+  .widget {
+    border: 1px solid var(--line);
+    max-width: 400px;
+    margin: 0 auto;
+    transition: opacity 340ms ease, filter 340ms ease;
+  }
+  .widget.is-dim { opacity: 0.34; filter: grayscale(1); }
+
+  .w-img {
+    height: 130px; background: var(--blue-soft);
+    display: flex; align-items: center; justify-content: center; color: #7C9AD0;
+  }
+  .w-body { padding: 20px; }
+  .w-title { font-size: 19px; font-weight: 600; }
+  .w-sub { font-size: 15px; color: var(--muted); margin-top: 4px; }
+
+  .w-alert {
+    margin-top: 16px; padding: 12px 14px;
+    background: #FEF2F2; border: 1px solid #FCA5A5;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .w-alert .txt { color: #B91C1C; font-weight: 600; font-size: 15px; }
+  .w-alert .clock {
+    color: #B91C1C; font-weight: 700; font-variant-numeric: tabular-nums;
+    font-size: 20px; letter-spacing: 0.02em;
+  }
+  .w-watchers { margin-top: 10px; font-size: 14px; color: #B45309; }
+  .w-price { margin-top: 16px; display: flex; align-items: baseline; gap: 10px; }
+  .w-price .now { font-size: 26px; font-weight: 700; }
+  .w-price .was { color: var(--faint); text-decoration: line-through; }
+  .w-book {
+    margin-top: 16px; width: 100%; padding: 13px; border: 0;
+    background: var(--blue); color: #fff; font: inherit; font-size: 17px; font-weight: 600;
+  }
+
+  /* ---- the agent's memory ---- */
+  .memory { opacity: 0; transition: opacity 340ms ease; }
+  .memory.is-in { opacity: 1; }
+  .mem-head {
+    font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--orange); font-weight: 600; margin-bottom: 14px;
+  }
+  .log {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: clamp(12px, 1.35vw, 14px);
+    border-top: 1px solid var(--line);
+  }
+  .log div {
+    display: flex; justify-content: space-between; gap: 14px;
+    padding: 7px 0; border-bottom: 1px solid var(--line);
+    color: var(--muted);
+  }
+  .log div span:last-child { color: var(--orange); white-space: nowrap; }
+  .log .ellipsis { justify-content: center; color: var(--faint); letter-spacing: .3em; }
+</style>
+</head>
+<body>
+<main class="stage">
+
+  <div class="bar">
+    <span class="pill is-blue" id="pill">Today</span>
+    <span class="bar-note" id="barNote">You have four minutes to decide</span>
+  </div>
+
+  <h1 id="headline">Only two rooms left.</h1>
+
+  <div class="scene">
+    <div class="split2">
+
+      <div class="widget" id="widget">
+        <div class="w-img" aria-hidden="true">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 21h18M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/>
+          </svg>
+        </div>
+        <div class="w-body">
+          <div class="w-title">Harbour View Hotel</div>
+          <div class="w-sub">Sea-facing · Breakfast included</div>
+
+          <div class="w-alert">
+            <span class="txt">Only 2 rooms left!</span>
+            <span class="clock" id="clock">04:59</span>
+          </div>
+          <div class="w-watchers" id="watchers">8 people are viewing this right now</div>
+
+          <div class="w-price">
+            <span class="now">$248</span>
+            <span class="was">$310</span>
+          </div>
+          <button class="w-book" type="button" tabindex="-1">Book now — price may change</button>
+        </div>
+      </div>
+
+      <div class="memory" id="memory">
+        <div class="mem-head">Agent memory · same page, same claim</div>
+        <div class="log" id="log"></div>
+        <div style="margin-top:18px;font-size:17px;color:var(--muted)">
+          Sixty days observed. The room count never changed.
+          The timer resets on every page load.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="verdict" id="verdict">
+    <div class="line1" id="v1">Hurry. This is your last chance.</div>
+    <div class="line2" id="v2">It was also your last chance last Thursday.</div>
+  </div>
+
+  <button class="reveal" id="btn">Show what the agent remembers</button>
+
+  <p class="footnote">Illustrative reconstruction of a common pattern, not a specific company.</p>
+  <p class="cue">Reveal it on the line: <b>“It knows the clock said that yesterday.”</b></p>
+
+</main>
+
+<script src="_stage.js"></script>
+<script>
+(function () {
+  var el = {
+    pill: document.getElementById('pill'),
+    note: document.getElementById('barNote'),
+    headline: document.getElementById('headline'),
+    widget: document.getElementById('widget'),
+    clock: document.getElementById('clock'),
+    watchers: document.getElementById('watchers'),
+    memory: document.getElementById('memory'),
+    log: document.getElementById('log'),
+    verdict: document.getElementById('verdict'),
+    v1: document.getElementById('v1'),
+    v2: document.getElementById('v2'),
+    btn: document.getElementById('btn')
+  };
+
+  // ---- the live countdown. It is the hook: the room watches it fall. ----
+  var secs = 299;
+  var ticking = true;
+
+  function paint() {
+    var m = Math.floor(secs / 60), s = secs % 60;
+    el.clock.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+  }
+  paint();
+
+  setInterval(function () {
+    if (!ticking) return;
+    secs--;
+    // It never actually expires. That is the point.
+    if (secs < 0) secs = 299;
+    paint();
+  }, 1000);
+
+  // The watcher count jitters, because that is what these widgets do.
+  var WATCHERS = [8, 11, 7, 9, 12, 6, 10];
+  var wi = 0;
+  setInterval(function () {
+    if (!ticking) return;
+    wi = (wi + 1) % WATCHERS.length;
+    el.watchers.textContent = WATCHERS[wi] + ' people are viewing this right now';
+  }, 2600);
+
+  // ---- the agent's log ----
+  var DAYS = [
+    ['day 60', '2 rooms left · 04:59'],
+    ['day 47', '2 rooms left · 04:59'],
+    ['day 33', '2 rooms left · 04:59'],
+    ['day 21', '2 rooms left · 04:59'],
+    ['day 12', '2 rooms left · 04:59'],
+    ['day 04', '2 rooms left · 04:59'],
+    ['today',  '2 rooms left · 04:59']
+  ];
+
+  DAYS.forEach(function (d, i) {
+    if (i === 3) {
+      var e = document.createElement('div');
+      e.className = 'ellipsis';
+      e.textContent = '···';
+      el.log.appendChild(e);
+    }
+    var row = document.createElement('div');
+    row.innerHTML = '<span>' + d[0] + '</span><span>' + d[1] + '</span>';
+    el.log.appendChild(row);
+  });
+
+  var state = 'today';
+
+  function render() {
+    var seen = state === 'seen';
+
+    el.pill.textContent = seen ? 'Delegation Economy' : 'Today';
+    el.pill.className = seen ? 'pill is-orange' : 'pill is-blue';
+    el.note.textContent = seen ? 'The agent kept the receipts' : 'You have four minutes to decide';
+    el.headline.textContent = seen ? 'The clock said that yesterday.' : 'Only two rooms left.';
+
+    el.widget.classList.toggle('is-dim', seen);
+    el.memory.classList.toggle('is-in', seen);
+    ticking = !seen;   // freeze the lie once it has been caught
+
+    el.v1.textContent = seen
+      ? 'Scarcity is a design element.'
+      : 'Hurry. This is your last chance.';
+    el.v2.textContent = seen
+      ? 'Urgency works on people who are tired. An agent is never tired, and it never forgets what you said last week.'
+      : 'It was also your last chance last Thursday.';
+    el.verdict.classList.toggle('is-orange', seen);
+
+    el.btn.textContent = seen ? 'Show the clock again' : 'Show what the agent remembers';
+  }
+
+  el.btn.addEventListener('click', function () {
+    state = state === 'today' ? 'seen' : 'today';
+    render();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      el.btn.click();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

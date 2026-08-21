@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your logo cannot charm an API — Delegation Economy</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: 40px;
+  }
+
+  .brand { text-align: center; transition: opacity 340ms ease; }
+  .brand.is-dim { opacity: 0.25; }
+  .brand .mark {
+    width: 150px; height: 150px; margin: 0 auto;
+    border-radius: 50%;
+    background: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    transition: width 340ms ease, height 340ms ease;
+  }
+  .brand.is-dim .mark { width: 108px; height: 108px; }
+  .brand .bname {
+    margin-top: 18px;
+    font-size: clamp(22px, 2.6vw, 30px);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .brand .tagline { margin-top: 8px; font-size: 17px; color: var(--muted); }
+  .hearts { margin-top: 14px; display: flex; gap: 10px; justify-content: center; color: var(--orange); }
+
+  /* evidence table — only present in agent view */
+  .evidence {
+    margin-top: 46px;
+    max-width: 460px;
+  }
+  .row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 20px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 17px;
+  }
+  .row .k { letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); font-weight: 500; }
+  .row .v { color: var(--orange); font-weight: 600; letter-spacing: 0.04em; }
+
+  .right-actor { text-align: center; padding-top: 60px; }
+
+  @media (max-width: 820px) {
+    .split { grid-template-columns: 1fr; }
+    .right-actor { padding-top: 0; }
+    .evidence { margin-inline: auto; }
+  }
+</style>
+</head>
+<body>
+<main class="stage">
+
+  <div class="bar">
+    <span class="pill is-blue" id="pill">Human view</span>
+    <span class="bar-note" id="barNote">The brand controls the story</span>
+  </div>
+
+  <h1 id="headline">“Trust us.”</h1>
+
+  <div class="scene">
+    <div class="split">
+
+      <div>
+        <div class="brand" id="brand">
+          <div class="mark" aria-hidden="true">
+            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3l1.9 5.2L19 10l-5.1 1.8L12 17l-1.9-5.2L5 10l5.1-1.8z"/><path d="M18.5 15.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/>
+            </svg>
+          </div>
+          <div class="bname">BETTER™</div>
+          <div class="tagline">Premium. Personal. Purpose-driven.</div>
+          <div class="hearts" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.6-9.3-8.3C.9 9.7 2.4 6 5.8 6c2 0 3.4 1.2 4.2 2.3C10.8 7.2 12.2 6 14.2 6c3.4 0 4.9 3.7 3.1 6.7C19 16.4 12 21 12 21z"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.6-9.3-8.3C.9 9.7 2.4 6 5.8 6c2 0 3.4 1.2 4.2 2.3C10.8 7.2 12.2 6 14.2 6c3.4 0 4.9 3.7 3.1 6.7C19 16.4 12 21 12 21z"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.6-9.3-8.3C.9 9.7 2.4 6 5.8 6c2 0 3.4 1.2 4.2 2.3C10.8 7.2 12.2 6 14.2 6c3.4 0 4.9 3.7 3.1 6.7C19 16.4 12 21 12 21z"/></svg>
+          </div>
+        </div>
+
+        <div class="evidence" id="evidence" hidden>
+          <div class="row"><span class="k">Price</span><span class="v">18% higher</span></div>
+          <div class="row"><span class="k">Returns</span><span class="v">7 days</span></div>
+          <div class="row"><span class="k">Cancellation</span><span class="v">9 steps</span></div>
+          <div class="row"><span class="k">Service</span><span class="v">2.1 / 5</span></div>
+          <div class="row"><span class="k">Verified outcomes</span><span class="v">None</span></div>
+        </div>
+      </div>
+
+      <div class="right-actor">
+        <div class="actor" id="judge">
+          <div class="icon" id="judgeIcon" aria-hidden="true">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <div class="name" id="judgeName" style="color:var(--ink)">&nbsp;</div>
+          <div class="sub" id="judgeSub" style="font-size:22px;color:var(--ink)">“I like them.”</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="verdict" id="verdict">
+    <div class="line2" style="margin-top:0;letter-spacing:.06em;text-transform:uppercase" id="vLabel">Human verdict</div>
+    <div class="line1" id="vText" style="margin-top:8px;font-size:clamp(20px,2.6vw,28px)">Looks good.</div>
+  </div>
+
+  <button class="reveal" id="btn">Let the agent inspect it</button>
+
+  <p class="cue">Reveal it immediately after: <b>“Your logo cannot charm an API.”</b></p>
+
+</main>
+
+<script src="_stage.js"></script>
+<script>
+(function () {
+  if (new URLSearchParams(location.search).has('embed')) document.body.classList.add('embed');
+
+  var PERSON =
+    '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
+    '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+
+  var SCANNER =
+    '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
+    '<path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/>' +
+    '<circle cx="11.5" cy="11.5" r="3"/><path d="m15 15 2 2"/></svg>';
+
+  var el = {
+    pill: document.getElementById('pill'),
+    note: document.getElementById('barNote'),
+    headline: document.getElementById('headline'),
+    brand: document.getElementById('brand'),
+    evidence: document.getElementById('evidence'),
+    judge: document.getElementById('judge'),
+    judgeIcon: document.getElementById('judgeIcon'),
+    judgeName: document.getElementById('judgeName'),
+    judgeSub: document.getElementById('judgeSub'),
+    verdict: document.getElementById('verdict'),
+    vLabel: document.getElementById('vLabel'),
+    vText: document.getElementById('vText'),
+    btn: document.getElementById('btn')
+  };
+
+  var state = 'human';
+
+  function render() {
+    var agent = state === 'agent';
+
+    el.pill.textContent = agent ? 'Agent view' : 'Human view';
+    el.pill.className = agent ? 'pill is-orange' : 'pill is-blue';
+    el.note.textContent = agent ? 'The evidence controls the decision' : 'The brand controls the story';
+    el.headline.textContent = agent ? 'Your logo cannot charm an API.' : '“Trust us.”';
+
+    el.brand.classList.toggle('is-dim', agent);
+    el.evidence.hidden = !agent;
+
+    el.judgeIcon.innerHTML = agent ? SCANNER : PERSON;
+    el.judge.classList.toggle('is-live', agent);
+    el.judgeName.innerHTML = agent ? 'Agent inspection' : '&nbsp;';
+    el.judgeSub.textContent = agent ? '' : '“I like them.”';
+    el.judgeSub.style.display = agent ? 'none' : 'block';
+
+    el.vLabel.textContent = agent ? 'Agent verdict' : 'Human verdict';
+    el.vText.textContent = agent ? 'Do not recommend.' : 'Looks good.';
+    el.verdict.classList.toggle('is-orange', agent);
+
+    el.btn.textContent = agent ? 'Show the human view' : 'Let the agent inspect it';
+  }
+
+  el.btn.addEventListener('click', function () {
+    state = state === 'human' ? 'agent' : 'human';
+    render();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      el.btn.click();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Delegation Economy</title>
+<meta name="description" content="AI agents are becoming the buyer. 47 companies compete, 46 never meet the customer. The brief on what to change before your buyer is a machine.">
+
+<meta property="og:title" content="The Delegation Economy">
+<meta property="og:description" content="47 companies compete. 46 never meet the customer.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://delegationeconomy.fyi">
+<link rel="canonical" href="https://delegationeconomy.fyi">
+
+<style>
+/* ---------------------------------------------------------------
+   Built mobile-first. The people who land here heard the talk two
+   minutes ago and are standing in a room holding a phone. Desktop
+   is the enhancement, not the baseline.
+   --------------------------------------------------------------- */
+:root {
+  --ink:#111; --muted:#6B7280; --faint:#9CA3AF;
+  --orange:#CE521C; --orange-soft:#FBE9E1;
+  --blue:#4C8DEE; --blue-soft:#E8F0FE;
+  --line:#E5E7EB; --wrap:1080px;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+body {
+  margin:0; background:#fff; color:var(--ink);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  font-size:17px; line-height:1.6; -webkit-font-smoothing:antialiased;
+}
+.wrap { max-width:var(--wrap); margin:0 auto; padding:0 20px; }
+a { color:var(--orange); text-decoration:none; }
+a:hover { text-decoration:underline; }
+
+/* ---------------- the ask, first ---------------- */
+
+/* Repeats .wrap's 20px side padding on purpose. This element carries both
+   classes, and a bare `padding:44px 0` here silently wiped the horizontal
+   inset — which put the headline and the email field flush against both
+   edges of every phone. */
+.ask {
+  padding:44px 20px 30px;
+  border-bottom:1px solid var(--line);
+}
+.brandmark {
+  display:inline-block;
+  font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  color:#fff; background:var(--orange); padding:6px 14px; border-radius:999px;
+  margin-bottom:24px;
+}
+.brandmark:hover { text-decoration:none; }
+
+h1 {
+  margin:0 0 16px;
+  font-size:clamp(30px,7.5vw,58px);
+  line-height:1.05; letter-spacing:-.03em; font-weight:700;
+  max-width:900px;
+}
+h1 em { font-style:normal; color:var(--orange); }
+.ask .lede {
+  margin:0 0 28px; max-width:560px;
+  font-size:clamp(17px,4.4vw,20px); color:var(--muted);
+}
+
+/* the form itself — the whole point of the page */
+form.capture { max-width:520px; }
+.field-row { display:flex; gap:10px; flex-wrap:wrap; }
+input[type=email] {
+  flex:1 1 100%;
+  padding:16px; font:inherit; font-size:17px;
+  border:1.5px solid var(--ink); border-radius:0; background:#fff; color:var(--ink);
+  min-height:54px;                 /* comfortable thumb target */
+}
+input[type=email]:focus { outline:3px solid var(--blue); outline-offset:-1px; }
+button.go {
+  flex:1 1 100%;
+  padding:16px 26px; min-height:54px;
+  border:0; border-radius:0; background:#111; color:#fff;
+  font:inherit; font-size:17px; font-weight:500; cursor:pointer;
+}
+button.go:hover { background:#000; }
+button.go:active { transform:translateY(1px); }
+.form-note { margin-top:12px; font-size:14px; color:var(--faint); }
+.form-status { margin-top:14px; font-size:16px; min-height:1.4em; }
+.form-status.ok   { color:#15803D; font-weight:500; }
+.form-status.warn { color:var(--orange); }
+
+@media (min-width:620px) {
+  input[type=email] { flex:1 1 260px; }
+  button.go { flex:0 0 auto; }
+}
+
+/* ---------------- shared section furniture ---------------- */
+
+section { padding:52px 0; border-top:1px solid var(--line); }
+.eyebrow {
+  font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--orange); font-weight:600; margin-bottom:14px;
+}
+h2 {
+  margin:0 0 16px;
+  font-size:clamp(23px,5.4vw,36px);
+  line-height:1.15; letter-spacing:-.02em; font-weight:700; max-width:780px;
+}
+.section-lede { max-width:680px; color:var(--muted); font-size:17px; margin:0; }
+
+/* ---------------- three beats ---------------- */
+
+.beats { display:grid; grid-template-columns:1fr; gap:16px; margin-top:30px; }
+.beat { padding:22px 20px; background:#FAFAFA; border:1px solid var(--line); }
+.beat .n { font-size:12px; letter-spacing:.12em; color:var(--faint); text-transform:uppercase; margin-bottom:10px; }
+.beat h3 { margin:0 0 8px; font-size:19px; line-height:1.25; letter-spacing:-.01em; }
+.beat p { margin:0; font-size:16px; color:var(--muted); }
+@media (min-width:860px) { .beats { grid-template-columns:repeat(3,1fr); gap:24px; } }
+
+/* ---------------- demos ---------------- */
+
+.demo { margin-top:30px; }
+.demo-head { margin-bottom:12px; }
+.demo-head h3 { margin:0; font-size:19px; letter-spacing:-.01em; }
+.demo-head .hint { display:block; margin-top:3px; font-size:14px; color:var(--faint); }
+.demo-frame {
+  width:100%; border:1px solid var(--line); background:#fff; display:block;
+  height:760px;                    /* stacked layout on a phone is tall */
+}
+@media (min-width:861px) { .demo-frame { height:620px; } }
+
+/* ---------------- pull quote ---------------- */
+
+.pull { background:#111; color:#fff; padding:56px 0; border-top:0; }
+.pull blockquote {
+  margin:0 auto; max-width:820px; text-align:center;
+  font-size:clamp(20px,5vw,34px); line-height:1.25; letter-spacing:-.02em; font-weight:600;
+}
+.pull .attrib { margin-top:18px; text-align:center; color:#9CA3AF; font-size:15px; }
+
+/* ---------------- case against ---------------- */
+
+.caveat { background:var(--orange-soft); }
+.caveat ul { margin:18px 0 0; padding-left:20px; max-width:720px; color:#3F2A20; }
+.caveat li { margin-bottom:9px; }
+
+/* ---------------- talk ---------------- */
+
+.btn-ghost {
+  display:inline-block; margin-top:22px;
+  padding:15px 26px; min-height:52px;
+  border:1.5px solid var(--ink); background:#fff; color:var(--ink);
+  font-size:17px; font-weight:500;
+}
+.btn-ghost:hover { text-decoration:none; background:#FAFAFA; }
+
+footer { border-top:1px solid var(--line); padding:34px 0 48px; color:var(--faint); font-size:14px; }
+footer div + div { margin-top:8px; }
+</style>
+</head>
+<body>
+
+<!-- ============ THE ASK — first thing, above the fold ============ -->
+<div class="wrap ask">
+  <a href="#" class="brandmark">Delegation Economy</a>
+
+  <h1>You just heard the talk. Here's the <em>one page</em> version.</h1>
+
+  <p class="lede">
+    The brief on what to change before your buyer is a machine — pricing, policies,
+    structured data, and the cancellation path you've been quietly relying on.
+  </p>
+
+  <form class="capture" id="signupForm" novalidate>
+    <label for="email" style="display:block;font-weight:500;margin-bottom:8px">Where should I send it?</label>
+    <div class="field-row">
+      <input type="email" id="email" name="email" placeholder="you@company.com"
+             required autocomplete="email" inputmode="email"
+             autocapitalize="off" autocorrect="off" spellcheck="false">
+      <button type="submit" class="go">Send me the brief</button>
+    </div>
+    <div class="form-note">One email. No cadence promises. Unsubscribe in one click.</div>
+    <div class="form-status" id="formStatus" role="status" aria-live="polite"></div>
+  </form>
+</div>
+
+<!-- ============ THE ARGUMENT (they already heard it — keep it short) ============ -->
+<section id="thesis">
+  <div class="wrap">
+    <div class="eyebrow">The argument, in case you're forwarding this</div>
+    <h2>Three things break at once, and none of them are technology problems.</h2>
+    <div class="beats">
+      <div class="beat">
+        <div class="n">One</div>
+        <h3>The click disappears</h3>
+        <p>People won't stop using the internet. They'll stop personally operating it. Your funnel assumes a human is somewhere in the loop.</p>
+      </div>
+      <div class="beat">
+        <div class="n">Two</div>
+        <h3>Lazy loyalty disappears</h3>
+        <p>Nine steps to cancel, and most people give up at four. An agent gets to step nine before you finish breakfast.</p>
+      </div>
+      <div class="beat">
+        <div class="n">Three</div>
+        <h3>Manipulation becomes evidence</h3>
+        <p>Fake urgency works on people who are tired. An agent isn't tired, and it remembers what your countdown clock said yesterday.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE DEMOS ============ -->
+<section id="demos">
+  <div class="wrap">
+    <div class="eyebrow">Press them yourself</div>
+    <h2>The six switches from the talk.</h2>
+    <p class="section-lede">
+      Each has two states — the world you sell into today, and the world after the customer
+      delegates. Same files that ran on the screen.
+    </p>
+
+    <div class="demo">
+      <div class="demo-head"><h3>1 · Twelve tabs, or one sentence</h3><span class="hint">Tap the button inside</span></div>
+      <iframe class="demo-frame" src="demos/twelve-tabs.html?embed=1" title="Twelve tabs, or one sentence" loading="lazy"></iframe>
+    </div>
+    <div class="demo">
+      <div class="demo-head"><h3>2 · Your customer disappears</h3><span class="hint">47 compete, 46 never meet you</span></div>
+      <iframe class="demo-frame" src="demos/customer-disappears.html?embed=1" title="The customer disappears" loading="lazy"></iframe>
+    </div>
+    <div class="demo">
+      <div class="demo-head"><h3>3 · What lazy loyalty costs</h3><span class="hint">Watch the total climb</span></div>
+      <iframe class="demo-frame" src="demos/the-subscription-bill.html?embed=1" title="What lazy loyalty costs" loading="lazy"></iframe>
+    </div>
+    <div class="demo">
+      <div class="demo-head"><h3>4 · Inconvenience is not a moat</h3><span class="hint">Nine steps, or one instruction</span></div>
+      <iframe class="demo-frame" src="demos/customer-exhaustion.html?embed=1" title="Inconvenience is not a moat" loading="lazy"></iframe>
+    </div>
+    <div class="demo">
+      <div class="demo-head"><h3>5 · The clock said that yesterday</h3><span class="hint">The countdown is live. It never expires.</span></div>
+      <iframe class="demo-frame" src="demos/the-clock-lied.html?embed=1" title="The clock said that yesterday" loading="lazy"></iframe>
+    </div>
+    <div class="demo">
+      <div class="demo-head"><h3>6 · Your logo cannot charm an API</h3><span class="hint">Human view, then agent view</span></div>
+      <iframe class="demo-frame" src="demos/logo-cannot-charm-api.html?embed=1" title="Your logo cannot charm an API" loading="lazy"></iframe>
+    </div>
+  </div>
+</section>
+
+<div class="pull">
+  <div class="wrap">
+    <blockquote>&ldquo;Social media swallowed our attention. AI agents are coming for our decisions. Don't spend the next decade begging to be clicked.&rdquo;</blockquote>
+    <div class="attrib">From the talk</div>
+  </div>
+</div>
+
+<!-- ============ THE CASE AGAINST ============ -->
+<section class="caveat">
+  <div class="wrap">
+    <div class="eyebrow">The case against</div>
+    <h2>This isn't guaranteed, and anyone who tells you it is should worry you.</h2>
+    <p class="section-lede" style="color:#4A3227">Here's what would make the whole thesis fail:</p>
+    <ul>
+      <li>Agents stay unreliable enough that people keep doing the buying themselves.</li>
+      <li>Consumers refuse to hand over payment authority, and trust never arrives.</li>
+      <li>Regulators restrict what an agent may transact on a person&rsquo;s behalf.</li>
+      <li>Platforms lock agents out to protect ad revenue, and the open web wins by default.</li>
+    </ul>
+    <p style="max-width:720px;margin-top:18px;color:#3F2A20">
+      Any one of those slows this down by years. None is a reason to be unreadable to a machine
+      in the meantime — that part costs almost nothing and helps either way.
+    </p>
+  </div>
+</section>
+
+<!-- ============ BOOKING ============ -->
+<section id="talk">
+  <div class="wrap">
+    <div class="eyebrow">Want this talk at your event?</div>
+    <h2>Seven minutes on what happens after the last click.</h2>
+    <p class="section-lede">
+      For founders, marketers and operators. Curiosity to recognition to a practical plan, ending
+      with three moves a business can make this quarter. The visuals above run live on stage.
+    </p>
+    <a class="btn-ghost" href="mailto:joey@delegationeconomy.fyi?subject=Delegation%20Economy%20—%20speaking%20enquiry">joey@delegationeconomy.fyi</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>delegationeconomy.fyi</div>
+    <div>A thesis in progress. Most predictions are wrong in the details.</div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // ------------------------------------------------------------------
+  // Formspree. Submissions land in the Formspree dashboard and get
+  // emailed to the address on that account (uberandujar@gmail.com).
+  // Free tier is 50 submissions/month — watch it if a big room signs up.
+  //
+  // Set this back to '' and the form stops pretending to work: it shows
+  // the address to write to instead, which beats silently eating emails.
+  // ------------------------------------------------------------------
+  var FORM_ENDPOINT = 'https://formspree.io/f/mgawddar';
+  var FALLBACK = 'joey@delegationeconomy.fyi';
+
+  var form   = document.getElementById('signupForm');
+  var input  = document.getElementById('email');
+  var status = document.getElementById('formStatus');
+  var button = form.querySelector('button.go');
+
+  function say(msg, kind) {
+    status.innerHTML = msg;
+    status.className = 'form-status ' + (kind || '');
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var value = input.value.trim();
+
+    if (!value || value.indexOf('@') < 1 || value.lastIndexOf('.') < value.indexOf('@')) {
+      say('That address doesn’t look right — check it and try again.', 'warn');
+      input.focus();
+      return;
+    }
+
+    if (!FORM_ENDPOINT) {
+      // Be useful rather than fake. Offer the address and pre-fill a mail draft.
+      var href = 'mailto:' + FALLBACK +
+        '?subject=' + encodeURIComponent('Send me the Delegation Economy brief') +
+        '&body=' + encodeURIComponent(value);
+      say('The list isn’t connected yet. Email <a href="' + href + '">' + FALLBACK +
+          '</a> and you’ll be first on it.', 'warn');
+      return;
+    }
+
+    button.disabled = true;
+    say('Sending…');
+
+    fetch(FORM_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ email: value })
+    }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      form.reset();
+      say('Got it. The brief is on its way.', 'ok');
+    }).catch(function () {
+      say('That didn’t go through. Email <a href="mailto:' + FALLBACK + '">' + FALLBACK +
+          '</a> and I’ll add you by hand.', 'warn');
+    }).then(function () {
+      button.disabled = false;
+    });
+  });
+})();
+</script>
+</body>
+</html>

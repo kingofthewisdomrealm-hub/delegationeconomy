@@ -1,0 +1,218 @@
+/* Delegation Economy — shared stage-demo styling.
+   Loaded by each standalone demo. Kept in one file so the three stay visually identical. */
+
+:root {
+  --ink: #111111;
+  --muted: #6B7280;
+  --faint: #9CA3AF;
+  --orange: #CE521C;
+  --orange-soft: #FBE9E1;
+  --blue: #4C8DEE;
+  --blue-soft: #E8F0FE;
+  --bg: #FFFFFF;
+  --line: #E5E7EB;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.stage {
+  max-width: 1180px;
+  margin: 0 auto;
+  /* Bottom padding reserves room for .stage-hint so the reveal button never
+     lands on top of it on a 16:9 projector. */
+  padding: 28px 32px 72px;
+}
+
+/* ---- header row: state pill + state caption ---- */
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 34px;
+}
+
+.pill {
+  display: inline-block;
+  padding: 7px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--blue);
+  transition: background 340ms ease;
+}
+
+.pill.is-blue  { background: var(--blue-soft); color: #2C63B4; }
+.pill.is-orange{ background: var(--orange);    color: #fff; }
+
+.bar-note {
+  font-size: 17px;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* ---- headline ---- */
+
+h1 {
+  margin: 0 0 32px;
+  text-align: center;
+  font-size: clamp(28px, 4.2vw, 46px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+}
+
+/* ---- the scene ---- */
+
+.scene {
+  position: relative;
+  min-height: 420px;
+}
+
+.actor { text-align: center; }
+
+.actor .icon { color: var(--faint); transition: color 340ms ease; }
+.actor .name {
+  margin-top: 10px;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 340ms ease;
+}
+.actor .sub {
+  margin-top: 6px;
+  font-size: 16px;
+  color: var(--faint);
+  line-height: 1.4;
+}
+
+.actor.is-live .icon,
+.actor.is-live .name { color: var(--orange); }
+.actor.is-live .sub  { color: var(--muted); }
+
+.actor.is-dim { opacity: 0.32; }
+
+/* dots between actors */
+.dots { display: flex; gap: 9px; align-items: center; justify-content: center; }
+.dots i {
+  width: 11px; height: 11px; border-radius: 50%;
+  background: #C9CDD3; display: block;
+}
+
+/* ---- captions under the scene ---- */
+
+.verdict {
+  margin-top: 44px;
+  text-align: center;
+}
+.verdict .line1 {
+  font-size: clamp(17px, 2.1vw, 22px);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.verdict .line2 {
+  margin-top: 10px;
+  font-size: 17px;
+  color: var(--muted);
+}
+.verdict.is-orange .line1 { color: var(--orange); }
+
+/* ---- reveal button ---- */
+
+.reveal {
+  display: block;
+  margin: 30px auto 0;
+  padding: 13px 26px;
+  border: 0;
+  border-radius: 999px;
+  background: #111;
+  color: #fff;
+  font: inherit;
+  font-size: 17px;
+  cursor: pointer;
+  transition: transform 120ms ease, background 200ms ease;
+}
+.reveal:hover  { background: #000; }
+.reveal:active { transform: translateY(1px); }
+.reveal:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+
+/* ---- presenter note (hidden in embed mode) ---- */
+
+.cue {
+  margin: 28px auto 0;
+  max-width: 760px;
+  text-align: center;
+  font-size: 17px;
+  color: var(--ink);
+}
+.cue b { font-weight: 600; }
+
+body.embed .cue { display: none; }
+body.embed .stage { padding: 24px 20px 32px; }
+body.embed h1 { font-size: clamp(22px, 3vw, 32px); margin-bottom: 34px; }
+body.embed .scene { min-height: 340px; }
+body.embed .bar-note { font-size: 15px; }
+
+/* ---- blackout: the speaker takes the room back ---- */
+
+.blackout {
+  position: fixed; inset: 0; z-index: 999;
+  background: #000;
+  opacity: 0; pointer-events: none;
+  transition: opacity 160ms ease;
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 40px;
+}
+.blackout.is-on { opacity: 1; pointer-events: auto; cursor: pointer; }
+.blackout span {
+  color: #2A2A2A; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;
+}
+
+/* Fades itself out after a few seconds. It is a reminder for the speaker
+   before they start, not decoration for the audience to read all talk. */
+.stage-hint {
+  position: fixed; left: 0; right: 0; bottom: 14px;
+  text-align: center;
+  font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: #D6D9DD;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 700ms ease;
+}
+.stage-hint.is-gone { opacity: 0; }
+
+/* ---- utilities used by the newer aids ---- */
+
+.big-number {
+  font-size: clamp(46px, 9vw, 108px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.footnote {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--faint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
