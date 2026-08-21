@@ -169,3 +169,4 @@ One design constraint to carry into that build, decided early: score **machine-r
 not reputation. The `SERVICE 2.1/5` figure on the stage demo is illustrative. Publishing an
 automated quality verdict about a named real business is a defamation-shaped problem, not a
 feature.
+
