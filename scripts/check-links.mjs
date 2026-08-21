@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Fails if any local href/src in index.html or demos/*.html points at a file
+ * Fails if any local href/src in index.html, brief.html or demos/*.html points at a file
  * that does not exist.
  *
  * Script bodies are stripped before scanning. They contain strings like
@@ -18,6 +18,7 @@ const root = path.resolve(process.argv[2] ?? ".");
 function htmlFiles() {
   const files = [];
   if (fs.existsSync(path.join(root, "index.html"))) files.push("index.html");
+  if (fs.existsSync(path.join(root, "brief.html"))) files.push("brief.html");
 
   const demos = path.join(root, "demos");
   if (fs.existsSync(demos)) {
@@ -41,13 +42,12 @@ let checked = 0;
 for (const rel of files) {
   const source = fs
     .readFileSync(path.join(root, rel), "utf8")
-    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+    .replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi, "");
 
-  for (const match of source.matchAll(/(?:src|href)="([^"#]+)"/g)) {
+  for (const match of source.matchAll(/(?:src|href)=\"([^\"#]+)\"/g)) {
     const ref = match[1];
 
-    // External and non-file schemes are out of scope.
-    if (/^(https?:|mailto:|tel:|data:|\/\/)/i.test(ref)) continue;
+    if (/^(https?:|mailto:|tel:|data:|\\/\\/)/i.test(ref)) continue;
 
     checked++;
 
