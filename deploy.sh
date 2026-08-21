@@ -17,27 +17,10 @@ if ! command -v node >/dev/null 2>&1; then
 fi
 
 # Fail early on a broken local reference rather than shipping a 404.
-# Script bodies are stripped first — they contain strings like
-# href="' + x + '" that look like links but aren't.
-missing=$(node -e '
-const fs=require("fs"),path=require("path");
-const files=["index.html",...fs.readdirSync("demos").filter(f=>f.endsWith(".html")).map(f=>"demos/"+f)];
-let bad=[];
-for(const f of files){
-  const s=fs.readFileSync(f,"utf8").replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,"");
-  for(const m of s.matchAll(/(?:src|href)="([^"#]+)"/g)){
-    const p=m[1];
-    if(/^(https?:|mailto:|data:)/.test(p))continue;
-    const t=path.normalize(path.join(path.dirname(f),p.split("?")[0]));
-    if(!fs.existsSync(t))bad.push(f+" -> "+p);
-  }
-}
-process.stdout.write(bad.join("\n"));
-')
-
-if [ -n "$missing" ]; then
-  echo "Broken references, not deploying:"
-  echo "$missing"
+# The check itself lives in scripts/check-links.mjs so that CI, a git hook
+# and this script all run the same implementation.
+if ! node scripts/check-links.mjs; then
+  echo "Not deploying."
   exit 1
 fi
 
