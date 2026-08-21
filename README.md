@@ -12,9 +12,17 @@ Landing page and stage visuals for the Delegation Economy talk.
 | Form capture | Formspree, account `uberandujar@gmail.com` | Submissions notify that address. |
 | `joey@delegationeconomy.fyi` | Porkbun forward | → `kingofthewisdomrealm@gmail.com`. Different inbox from Formspree. |
 
-**This folder is not a git repo.** No `.git`, no remote, no link to the `marketpredictor`
-repository. Deploys happen by direct upload through `./deploy.sh`. Connecting anything on
-GitHub does not affect this site.
+**This folder is a git repo, and pushing to `main` deploys production.** Remote:
+`kingofthewisdomrealm-hub/delegationeconomy`. The Vercel project is git-connected —
+verified 2026-08-21 at
+https://vercel.com/josias7/delegationeconomy/settings/git — so `git push origin main`
+builds and promotes to delegationeconomy.fyi by itself. The same push runs the link
+check in `.github/workflows/check-links.yml`.
+
+`./deploy.sh` still works and uploads straight from your disk, bypassing git entirely.
+Use it for `./deploy.sh preview` on something you have not committed. Shipping
+production with it means the live site no longer matches `main`, and then nobody can
+tell what is deployed by reading the repo. **Default to push.**
 
 ### DNS, and the trap that cost an afternoon
 
