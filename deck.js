@@ -45,6 +45,18 @@
   window.addEventListener("keydown", function (e) {
     var tag = (e.target && e.target.tagName) || "";
     if (tag === "INPUT" || tag === "TEXTAREA") return;
+    var blackout = document.getElementById("blackout");
+    var k = e.key.toLowerCase();
+    if (document.body.classList.contains("presenting") && (k === "b" || k === "escape")) {
+      e.preventDefault();
+      blackout.hidden = !blackout.hidden;
+      return;
+    }
+    if (!blackout.hidden) {
+      e.preventDefault();
+      blackout.hidden = true;
+      return;
+    }
     if (e.key === "ArrowRight" || e.key === "ArrowDown" || e.key === "PageDown" || e.key === " ") {
       e.preventDefault();
       go(i + 1);
@@ -78,6 +90,66 @@
   });
 
   go(0);
+
+  document.getElementById("present").addEventListener("click", function () {
+    document.body.classList.toggle("presenting");
+    this.classList.toggle("on");
+    document.getElementById("blackout").hidden = true;
+    document.getElementById("hint").textContent = document.body.classList.contains("presenting")
+      ? "space / → next · B blackout"
+      : "Arrows · space · tap a scene to flip";
+  });
+  document.getElementById("blackout").addEventListener("click", function () {
+    this.hidden = true;
+  });
+
+  var copy = {
+    tabs: {
+      off: ["Today", "Ninety minutes, twelve tabs", "Planning a holiday, today.", "Twelve tabs. Ninety minutes. You stay home.", "Delegate it instead"],
+      on: ["Delegated", "One instruction, then silence", "Planning a holiday, soon.", "Eleven companies were compared. None of them were seen.", "Show the tabs again"]
+    },
+    ledger: {
+      off: ["Today", "Still paying because cancelling is annoying", "What lazy loyalty costs you every month.", "You are still paying for things you stopped using.", "Show the agent cleanup"],
+      on: ["Delegated", "Six cancelled. Three kept.", "The agent cleaned the ledger.", "Kept $38.97 · Cut $57.95 / month", "Show the full ledger again"]
+    },
+    clock: {
+      off: ["Today", "The clock is running. Act now.", "The offer ends in a few hours.", "Fake urgency works on people who are tired.", "Show what the agent sees"],
+      on: ["Delegated", "The same number, every day", "The clock said that yesterday.", "Permanent urgency is just a lie with a timer.", "Show the urgency offer again"]
+    }
+  };
+
+  Array.prototype.forEach.call(document.querySelectorAll(".aid"), function (aid) {
+    var id = aid.getAttribute("data-aid");
+    var btn = aid.querySelector(".flip");
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      aid.classList.toggle("on");
+      var state = aid.classList.contains("on") ? copy[id].on : copy[id].off;
+      aid.querySelector(".pill").textContent = state[0];
+      aid.querySelector(".aid-note").textContent = state[1];
+      aid.querySelector(".aid-title").textContent = state[2];
+      aid.querySelector(".verdict").textContent = state[3];
+      btn.textContent = state[4];
+      if (id === "ledger") {
+        aid.querySelector(".total span:first-child").textContent = aid.classList.contains("on") ? "What you keep" : "Monthly total";
+        aid.querySelector(".total span:last-child").textContent = aid.classList.contains("on") ? "$38.97" : "$96.92";
+      }
+    });
+  });
+
+  var total = 4 * 3600 + 12 * 60 + 37;
+  function pad(n) { return String(n).padStart(2, "0"); }
+  function tick() {
+    total = total > 0 ? total - 1 : 4 * 3600 + 12 * 60 + 37;
+    var h = Math.floor(total / 3600);
+    var m = Math.floor((total % 3600) / 60);
+    var s = total % 60;
+    document.getElementById("ch").textContent = pad(h);
+    document.getElementById("cm").textContent = pad(m);
+    document.getElementById("cs").textContent = pad(s);
+    document.getElementById("nowclock").textContent = pad(h) + ":" + pad(m) + ":" + pad(s);
+  }
+  setInterval(tick, 1000);
 
   var FORM_ENDPOINT = "https://formspree.io/f/mgawddar";
   var FALLBACK = "joey@delegationeconomy.fyi";
