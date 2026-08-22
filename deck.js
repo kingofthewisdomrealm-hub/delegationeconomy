@@ -1,6 +1,6 @@
 (function () {
-  var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
-  var n = slides.length;
+  var allSlides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var extrasUnlocked = false;
   var i = 0;
   var wheelLock = false;
   var touchStart = null;
@@ -17,28 +17,41 @@
   inner.insertBefore(label, inner.firstChild);
   kickerEl = label;
 
-  slides.forEach(function (_, idx) {
-    var b = document.createElement("button");
-    b.type = "button";
-    b.className = "dot";
-    b.setAttribute("aria-label", "Go to slide " + (idx + 1));
-    b.addEventListener("click", function () { go(idx); });
-    dots.appendChild(b);
-  });
+  function slides() {
+    return extrasUnlocked
+      ? allSlides
+      : allSlides.filter(function (s) { return !s.hasAttribute("data-extra"); });
+  }
+
+  function renderDots() {
+    dots.innerHTML = "";
+    slides().forEach(function (_, idx) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "dot";
+      b.setAttribute("aria-label", "Go to slide " + (idx + 1));
+      b.addEventListener("click", function () { go(idx); });
+      dots.appendChild(b);
+    });
+  }
 
   function go(nextIndex) {
+    var list = slides();
+    var n = list.length;
     i = Math.max(0, Math.min(n - 1, nextIndex));
-    slides.forEach(function (s, idx) { s.classList.toggle("on", idx === i); });
+    allSlides.forEach(function (s) { s.classList.remove("on"); });
+    list[i].classList.add("on");
     Array.prototype.forEach.call(dots.children, function (d, idx) {
       d.classList.toggle("on", idx === i);
     });
-    kickerEl.textContent = slides[i].getAttribute("data-kicker") || "";
+    kickerEl.textContent = list[i].getAttribute("data-kicker") || "";
     count.textContent = String(i + 1).padStart(2, "0") + " / " + String(n).padStart(2, "0");
     progress.style.width = ((i + 1) / n * 100) + "%";
     prev.disabled = i === 0;
     next.disabled = i === n - 1;
   }
 
+  renderDots();
   prev.addEventListener("click", function () { go(i - 1); });
   next.addEventListener("click", function () { go(i + 1); });
 
@@ -68,7 +81,7 @@
       go(0);
     } else if (e.key === "End") {
       e.preventDefault();
-      go(n - 1);
+      go(slides().length - 1);
     }
   });
 
@@ -89,8 +102,6 @@
     touchStart = null;
   });
 
-  go(0);
-
   document.getElementById("present").addEventListener("click", function () {
     document.body.classList.toggle("presenting");
     this.classList.toggle("on");
@@ -102,6 +113,16 @@
   document.getElementById("blackout").addEventListener("click", function () {
     this.hidden = true;
   });
+
+  var more = document.getElementById("more");
+  if (more) {
+    more.addEventListener("click", function () {
+      extrasUnlocked = true;
+      more.parentElement.style.display = "none";
+      renderDots();
+      go(slides().length - 4);
+    });
+  }
 
   var copy = {
     tabs: {
@@ -115,12 +136,29 @@
     clock: {
       off: ["Today", "The clock is running. Act now.", "The offer ends in a few hours.", "Fake urgency works on people who are tired.", "Show what the agent sees"],
       on: ["Delegated", "The same number, every day", "The clock said that yesterday.", "Permanent urgency is just a lie with a timer.", "Show the urgency offer again"]
+    },
+    cancel: {
+      off: ["Today", "Nine steps. Most people quit at four.", "Cancelling is designed to exhaust you.", "Entire industries are protected by customer exhaustion.", "Show the agent version"],
+      on: ["Delegated", "One instruction. Then silence.", "The agent does not get exhausted.", "The wall was never a feature. It was a filter.", "Show the nine steps again"]
+    },
+    compare: {
+      off: ["Today", "Three options still feel open", "You are still being compared.", "The shortlist still feels open to you.", "Show what the agent already did"],
+      on: ["Delegated", "The decision already happened", "The comparison finished without you.", "Two brands never knew they were evaluated. One never knew it lost.", "Show the open shortlist again"]
+    },
+    homepage: {
+      off: ["Today", "Your homepage is the product", "The customer arrives at your homepage.", "You spent the budget on the page the human sees.", "Show the agent view"],
+      on: ["Delegated", "The agent never requests the page", "The agent never arrives at your homepage.", "No homepage requested. No video played. No brand film seen.", "Show the homepage again"]
+    },
+    brand: {
+      off: ["Today", "Brand is why they choose you", "Your brand is the reason they buy.", "You spent years building a brand people feel.", "Show what the agent can read"],
+      on: ["Delegated", "Brand is not a field", "Your brand is not a field the agent can read.", "The mission statement never became a data point.", "Show the brand story again"]
     }
   };
 
   Array.prototype.forEach.call(document.querySelectorAll(".aid"), function (aid) {
     var id = aid.getAttribute("data-aid");
     var btn = aid.querySelector(".flip");
+    if (!btn || !copy[id]) return;
     btn.addEventListener("click", function (e) {
       e.stopPropagation();
       aid.classList.toggle("on");
@@ -187,4 +225,6 @@
       button.disabled = false;
     });
   });
+
+  go(0);
 })();
