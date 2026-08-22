@@ -8,8 +8,10 @@
 <meta property="og:title" content="The Delegation Economy">
 <meta property="og:description" content="AI agents are becoming the buyer.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://delegationeconomy.fyi">
-<link rel="canonical" href="https://delegationeconomy.fyi">
+<meta property="og:url" content="https://www.delegationeconomy.fyi">
+<meta property="og:image" content="https://www.delegationeconomy.fyi/public/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://www.delegationeconomy.fyi">
 <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -94,17 +96,19 @@
             <span class="aid-note">Still paying because cancelling is annoying</span>
           </div>
           <h2 class="aid-title">What lazy loyalty costs you every month.</h2>
-          <div class="ledger">
-            <div class="row waste"><span>Streaming A</span><span>$15.99</span></div>
-            <div class="row keep"><span>Streaming B</span><span>$12.99</span></div>
-            <div class="row waste"><span>Cloud storage (extra)</span><span>$9.99</span></div>
-            <div class="row keep"><span>Productivity suite</span><span>$14.99</span></div>
-            <div class="row waste"><span>News + magazines</span><span>$8.00</span></div>
-            <div class="row waste"><span>Fitness app (unused)</span><span>$12.99</span></div>
-            <div class="row keep"><span>Music</span><span>$10.99</span></div>
-            <div class="row waste"><span>VPN (duplicate)</span><span>$7.99</span></div>
-            <div class="row waste"><span>Photo storage</span><span>$2.99</span></div>
-            <div class="row total"><span>Monthly total</span><span>$96.92</span></div>
+          <div class="scene">
+            <div class="ledger">
+              <div class="row waste"><span>Streaming A</span><span>$15.99</span></div>
+              <div class="row keep"><span>Streaming B</span><span>$12.99</span></div>
+              <div class="row waste"><span>Cloud storage (extra)</span><span>$9.99</span></div>
+              <div class="row keep"><span>Productivity suite</span><span>$14.99</span></div>
+              <div class="row waste"><span>News + magazines</span><span>$8.00</span></div>
+              <div class="row waste"><span>Fitness app (unused)</span><span>$12.99</span></div>
+              <div class="row keep"><span>Music</span><span>$10.99</span></div>
+              <div class="row waste"><span>VPN (duplicate)</span><span>$7.99</span></div>
+              <div class="row waste"><span>Photo storage</span><span>$2.99</span></div>
+              <div class="row total"><span>Monthly total</span><span>$96.92</span></div>
+            </div>
           </div>
           <p class="verdict">You are still paying for things you stopped using.</p>
           <button type="button" class="flip">Show the agent cleanup</button>
@@ -118,28 +122,30 @@
             <span class="aid-note">The clock is running. Act now.</span>
           </div>
           <h2 class="aid-title">The offer ends in a few hours.</h2>
-          <div class="offer">
-            <div class="offer-kicker">Limited time only</div>
-            <div class="offer-name">Summer Flash Sale</div>
-            <div class="offer-price">$89</div>
-            <div class="offer-was">was $149</div>
-            <div class="clock" id="clock">
-              <div><b id="ch">04</b><i>hrs</i></div>
-              <div><b id="cm">12</b><i>min</i></div>
-              <div><b id="cs">37</b><i>sec</i></div>
+          <div class="scene">
+            <div class="offer">
+              <div class="offer-kicker">Limited time only</div>
+              <div class="offer-name">Summer Flash Sale</div>
+              <div class="offer-price">$89</div>
+              <div class="offer-was">was $149</div>
+              <div class="clock" id="clock">
+                <div><b id="ch">04</b><i>hrs</i></div>
+                <div><b id="cm">12</b><i>min</i></div>
+                <div><b id="cs">37</b><i>sec</i></div>
+              </div>
+              <div class="offer-cta">Claim before it expires</div>
             </div>
-            <div class="offer-cta">Claim before it expires</div>
-          </div>
-          <div class="agent-log">
-            <div class="log-head">Agent · urgency integrity check</div>
-            <p class="dim">// observed same product across sessions</p>
-            <p>Today  countdown: <span id="nowclock">04:12:37</span></p>
-            <p>Yesterday  04:12:37</p>
-            <p>7 days ago  04:12:37</p>
-            <p>11 months  04:12:37</p>
-            <p class="flag">Flag: permanent artificial urgency</p>
-            <p class="flag">“was $149” has been the strikethrough for 11 months</p>
-            <p>Action: excluded from shortlist</p>
+            <div class="agent-log">
+              <div class="log-head">Agent · urgency integrity check</div>
+              <p class="dim">// observed same product across sessions</p>
+              <p>Today  countdown: <span id="nowclock">04:12:37</span></p>
+              <p>Yesterday  04:12:37</p>
+              <p>7 days ago  04:12:37</p>
+              <p>11 months  04:12:37</p>
+              <p class="flag">Flag: permanent artificial urgency</p>
+              <p class="flag">“was $149” has been the strikethrough for 11 months</p>
+              <p>Action: excluded from shortlist</p>
+            </div>
           </div>
           <p class="verdict">Fake urgency works on people who are tired.</p>
           <button type="button" class="flip">Show what the agent sees</button>
@@ -159,8 +165,136 @@
           <div class="status" id="formStatus" role="status" aria-live="polite"></div>
         </form>
         <p class="present-only lede">delegationeconomy.fyi — leave this up after the talk.</p>
-        <p class="extra hide-present"><a href="brief.html">Four more switches</a></p>
+        <p class="extra hide-present"><button type="button" class="more" id="more">Four more switches</button></p>
         <p class="extra">Want this talk: <a href="mailto:joey@delegationeconomy.fyi">joey@delegationeconomy.fyi</a></p>
+      </article>
+
+      <article class="slide" data-kicker="Extra 01" data-extra>
+        <div class="aid" data-aid="cancel">
+          <div class="aid-bar">
+            <span class="pill">Today</span>
+            <span class="aid-note">Nine steps. Most people quit at four.</span>
+          </div>
+          <h2 class="aid-title">Cancelling is designed to exhaust you.</h2>
+          <div class="scene">
+            <div class="before steps">
+              <div class="step"><span>1</span> Log in to your account <i>2 min</i></div>
+              <div class="step"><span>2</span> Find Settings → Billing <i>hunt</i></div>
+              <div class="step"><span>3</span> Click “Manage subscription”</div>
+              <div class="step"><span>4</span> Scroll past the upgrade offers <i>trap</i></div>
+              <div class="step quit"><span>5</span> “Are you sure? Here’s 30% off” <i>quit point</i></div>
+              <div class="step"><span>6</span> Select a cancellation reason <i>survey</i></div>
+              <div class="step"><span>7</span> Confirm you understand the loss</div>
+              <div class="step"><span>8</span> Wait for the email to arrive <i>hours</i></div>
+              <div class="step"><span>9</span> Click the final confirm link <i>done?</i></div>
+            </div>
+            <div class="after">
+              <div class="agent-log shown">
+                <div class="log-head">Agent · subscription cancellation</div>
+                <p class="dim">› Cancel my [Service] subscription effective today. Do not accept any retention offer.</p>
+                <p class="dim">// 1.4 seconds later</p>
+                <p>Cancelled. Confirmation ID: CX-48291. No further charges.</p>
+              </div>
+              <div class="stamp">Done in one instruction</div>
+            </div>
+          </div>
+          <p class="verdict">Entire industries are protected by customer exhaustion.</p>
+          <button type="button" class="flip">Show the agent version</button>
+        </div>
+      </article>
+
+      <article class="slide" data-kicker="Extra 02" data-extra>
+        <div class="aid" data-aid="compare">
+          <div class="aid-bar">
+            <span class="pill">Today</span>
+            <span class="aid-note">Three options still feel open</span>
+          </div>
+          <h2 class="aid-title">You are still being compared.</h2>
+          <div class="scene">
+            <div class="before compare">
+              <div class="card"><h3>Brand A</h3><p class="price">$94</p><p>Ships in 3 days</p></div>
+              <div class="card"><h3>Brand B</h3><p class="price">$89</p><p>Ships in 2 days</p></div>
+              <div class="card"><h3>Brand C</h3><p class="price">$97</p><p>Ships tomorrow</p></div>
+            </div>
+            <div class="after">
+              <div class="agent-log shown">
+                <div class="log-head">Agent comparison · 1.4s</div>
+                <p>Brand A · rejected<span class="dim">reason: no machine-readable cancel path</span></p>
+                <p>Brand C · rejected<span class="dim">reason: “was $149” for 11 months</span></p>
+                <p>Brand B · selected<span class="dim">booked · confirmation sent</span></p>
+              </div>
+            </div>
+          </div>
+          <p class="verdict">The shortlist still feels open to you.</p>
+          <button type="button" class="flip">Show what the agent already did</button>
+        </div>
+      </article>
+
+      <article class="slide" data-kicker="Extra 03" data-extra>
+        <div class="aid" data-aid="homepage">
+          <div class="aid-bar">
+            <span class="pill">Today</span>
+            <span class="aid-note">Your homepage is the product</span>
+          </div>
+          <h2 class="aid-title">The customer arrives at your homepage.</h2>
+          <div class="scene">
+            <div class="before browser">
+              <div class="chrome"><i></i><i></i><i></i><span>yourbrand.com</span></div>
+              <div class="hero">Your Brand · Summer</div>
+              <div class="tiles">
+                <div><b>Hero copy</b>Free shipping over $75</div>
+                <div><b>Social proof</b>4.8 · 12,400 reviews</div>
+              </div>
+            </div>
+            <div class="after">
+              <div class="agent-log shown">
+                <div class="log-head">GET /v1/products/sku-48291</div>
+<pre>{
+  "price": 89.00,
+  "in_stock": true,
+  "ships_in_days": 2,
+  "return_window_days": 30,
+  "cancel_path": "/api/cancel"
+}</pre>
+              </div>
+            </div>
+          </div>
+          <p class="verdict">You spent the budget on the page the human sees.</p>
+          <button type="button" class="flip">Show the agent view</button>
+        </div>
+      </article>
+
+      <article class="slide" data-kicker="Extra 04" data-extra>
+        <div class="aid" data-aid="brand">
+          <div class="aid-bar">
+            <span class="pill">Today</span>
+            <span class="aid-note">Brand is why they choose you</span>
+          </div>
+          <h2 class="aid-title">Your brand is the reason they buy.</h2>
+          <div class="scene">
+            <div class="before brand-card">
+              <div class="mark">NORTH & CO.</div>
+              <div class="story">
+                <b>Our story</b>
+                <p>We exist to make everyday choices feel intentional again.</p>
+                <p class="dim">Founded in 2014. Small batches. Trusted by 40,000 customers who care about the details.</p>
+              </div>
+            </div>
+            <div class="after">
+              <div class="agent-log shown">
+                <div class="log-head">Agent · readable fields only</div>
+                <p>price: 89.00</p>
+                <p>in_stock: true</p>
+                <p>ships_in_days: 3</p>
+                <p>return_window: 30</p>
+                <p>cancel_path: null <span class="dim">← missing</span></p>
+                <p class="dim">// brand, mission, awards<br>// → not present<br>// → ignored</p>
+              </div>
+            </div>
+          </div>
+          <p class="verdict">You spent years building a brand people feel.</p>
+          <button type="button" class="flip">Show what the agent can read</button>
+        </div>
       </article>
     </div>
   </section>
