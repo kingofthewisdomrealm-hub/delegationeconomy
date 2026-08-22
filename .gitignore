@@ -1,6 +1,7 @@
 node_modules
 .vercel
 .output
+.talk-out
 dist
 screenshots
 *.log
